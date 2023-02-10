@@ -1,5 +1,5 @@
 from pathlib import Path
-from decouple import config
+#from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -17,6 +17,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
+
+#User
+AUTH_USER_MODEL = 'user.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

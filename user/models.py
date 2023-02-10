@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -7,5 +8,5 @@ class Avatar(models.Model):
 
 
 
-class CustomUser(models.User):
-    avatar = models.ForeignKey(Avatar)
+class CustomUser(AbstractUser):
+    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE, blank=True)
