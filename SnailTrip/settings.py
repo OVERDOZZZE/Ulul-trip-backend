@@ -30,7 +30,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user.apps.UserConfig',
     'tour.apps.TourConfig',
+    'rest_framework',
+    'rest_framework.authoken',
+    'Snail_Trip',
+    'tour',
+    'user'
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ],
+    'PAGE_SIZE': 3
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
