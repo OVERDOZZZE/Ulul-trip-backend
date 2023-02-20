@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from .models import Tour, Category, Review, Images, Place
 
 
@@ -70,5 +72,3 @@ class ImageDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
         fields = 'id image'.split()
-
-

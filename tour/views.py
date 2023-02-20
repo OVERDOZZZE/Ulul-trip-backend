@@ -1,4 +1,3 @@
-from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Tour, Review, Place, Category, Images
@@ -10,19 +9,37 @@ class TourListCreateAPIView(ListCreateAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = MovieValidateSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(data={'errors': serializer.errors},
-                            status=status.HTTP_406_NOT_ACCEPTABLE)
-        title = serializer.validated_data.get('title')
-        description = serializer.validated_data.get('description')
-        duration = serializer.validated_data.get('duration')
-        director_id = serializer.validated_data.get('director_id')
 
-        movie = Movie.objects.create(title=title, description=description, duration=duration, director_id=director_id)
-        movie.save()
-        return Response(data=MovieDetailSerializer(movie).data, status=status.HTTP_201_CREATED)
+class TourDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Tour.objects.all()
+    serializer_class = TourSerializer
+    lookup_field = 'id'
+
+
+# class TourListCreateAPIView(ListCreateAPIView):
+#     queryset = Tour.objects.all()
+#     serializer_class = TourSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = TourSerializer(data=request.data)
+    #     if not serializer.is_valid():
+    #         return Response(data={'errors': serializer.errors},
+    #                         status=status.HTTP_406_NOT_ACCEPTABLE)
+    #     title = serializer.validated_data.get('title')
+    #     description = serializer.validated_data.get('description')
+    #     price = serializer.validated_data.get('price')
+    #     image = serializer.validated_data.get('image')
+    #     category = serializer.validated_data.get('category')
+    #     slug = serializer.validated_data.get('slug')
+    #     from_place = serializer.validated_data.get('from_place')
+    #     to = serializer.validated_data.get('to')
+    #     duration = serializer.validated_data.get('duration')
+    #     complexity = serializer.validated_data.get('complexity')
+    #
+    #     movie = Tour.objects.create(title=title, description=description, price=price, image=image, category=category,
+    #                                 slug=slug, from_place=from_place, to=to, duration=duration, complexity=complexity)
+    #     movie.save()
+    #     return Response(data=TourDetailSerializer(movie).data, status=status.HTTP_201_CREATED)
 
 
 class ReviewModelViewSet(ModelViewSet):
