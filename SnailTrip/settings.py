@@ -1,5 +1,5 @@
 from pathlib import Path
-from decouple import config
+#from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,7 +28,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user.apps.UserConfig',
     'tour.apps.TourConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
+
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ],
+    'PAGE_SIZE': 3
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -109,9 +119,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = 'media/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
