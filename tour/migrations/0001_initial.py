@@ -68,9 +68,9 @@ class Migration(migrations.Migration):
                 ('is_hot', models.BooleanField(default=False)),
                 ('duration', models.CharField(choices=[('1', 'День'), ('3', '3 дня'), ('7', '7 дней')], max_length=255)),
                 ('complexity', models.CharField(choices=[('Easy', 'Легкий'), ('Medium', 'Средний'), ('Hard', 'Тяжелый'), ('Extra', 'Экстра')], max_length=255)),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='tour.category')),
-                ('guide', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='tour.guide')),
-                ('region', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tour.region')),
+                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='user.category')),
+                ('guide', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='user.guide')),
+                ('region', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.region')),
             ],
             options={
                 'verbose_name': 'Tour',
@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
                 ('rating', models.SmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], default=5)),
                 ('date_published', models.DateTimeField(auto_now=True)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='review_author', to=settings.AUTH_USER_MODEL)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tour_reviews', to='tour.tour')),
+                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tour_reviews', to='user.user')),
             ],
             options={
                 'verbose_name': 'Review',
@@ -98,7 +98,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image', models.ImageField(upload_to='media/')),
                 ('is_main', models.BooleanField(blank=True, default=False, null=True)),
-                ('tour', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tour_images', to='tour.tour')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tour_images', to='user.user')),
             ],
             options={
                 'verbose_name': 'Image',

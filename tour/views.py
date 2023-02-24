@@ -6,4 +6,3 @@ from .serializers import *
 class TourListView(generics.ListAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
-
