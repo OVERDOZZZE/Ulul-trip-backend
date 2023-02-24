@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 from user.models import CustomUser
 
 DURATION_CHOICES = (
@@ -33,7 +35,7 @@ class Category(models.Model):
 
     name = models.CharField('Название', max_length=25)
     image = models.ImageField('Изображение', null=True, blank=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=177, unique=True, db_index=True, verbose_name='SLUG')
 
     def __str__(self):
         return self.name
@@ -63,6 +65,7 @@ class Place(models.Model):
 
 
 class Tour(models.Model):
+
     class Meta:
         verbose_name = 'Тур'
         verbose_name_plural = 'Туры'
@@ -71,8 +74,9 @@ class Tour(models.Model):
     description = models.TextField('Описание тура')
     price = models.FloatField("Цена")
     image = models.ManyToManyField(Images, blank=True, related_name='image_of_tour', verbose_name='Изображения')
-    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, blank=True, verbose_name='Категория')
-    slug = models.SlugField(unique=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, blank=True, verbose_name='Категория',
+                                 related_name='tour_category')
+    slug = models.SlugField(max_length=177, unique=True, db_index=True, verbose_name='SLUG')
     date_published = models.DateField(auto_now=True)
     date_departure = models.DateTimeField("Дата и время выезда")
     date_arrival = models.DateTimeField("Дата и время приезда")
@@ -86,6 +90,9 @@ class Tour(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('tour', kwargs={'tour_slug': self.slug})
 
     @property
     def get_image(self):
@@ -102,10 +109,8 @@ class Review(models.Model):
         verbose_name_plural = 'Отзывы'
 
     text = models.TextField()
-    post = models.ForeignKey(Tour, on_delete=models.CASCADE)
+    post = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name='tour_reviews')
     autor = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text
-
-
