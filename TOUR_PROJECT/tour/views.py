@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Tour, Review, Category, Region, Guide
+from .permissions import IsOwnerOrReadOnly
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from .service import TourFilter
@@ -23,23 +24,33 @@ class TourListView(generics.ListAPIView):
     serializer_class = TourSerializer
 
 
-class ReviewListView(generics.ListAPIView):
+class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
+    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
 
-class ReviewCreateView(APIView):
-    def post(self, request, id):
-        post = Tour.objects.get(id=id)
-        Review.objects.create(
-            author=request.user,
-            post_id=id,
-            text=request.data['text'],
-            rating=request.data['rating']
-        )
-        return Response({'review': "Review was created successfully!"})
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
-    permission_classes = [permissions.IsAuthenticated]
+
+# class ReviewListView(generics.ListAPIView):
+#     queryset = Review.objects.all()
+#     serializer_class = ReviewSerializer
+
+
+# class ReviewCreateView(APIView):
+#     def post(self, request, id):
+#         post = Tour.objects.get(id=id)
+#         Review.objects.create(
+#             author=request.user,
+#             post_id=id,
+#             text=request.data['text'],
+#             rating=request.data['rating']
+#         )
+#         return Response({'review': "Review was created successfully!"})
+#
+#     permission_classes = [permissions.IsAuthenticated]
 
 
 class CategoryListView(generics.ListAPIView):

@@ -50,7 +50,6 @@ class ShortTourSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    post = ShortTourSerializer()
     author = StringRelatedField(read_only=True)
 
     class Meta:

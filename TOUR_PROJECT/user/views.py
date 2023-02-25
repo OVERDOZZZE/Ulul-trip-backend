@@ -36,7 +36,7 @@ def activate(request, uid64, token):
 
 
 def activateEmail(request, user, to_email):
-    main_subject = 'Activate your user account )'
+    main_subject = 'Activate your user account'
     message = render_to_string('user/activate_account.html',
                 {
                     'user': user.username,
