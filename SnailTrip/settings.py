@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'user.apps.UserConfig',
-    'tour.apps.TourConfig'
+    'tour.apps.TourConfig',
+    'django_filters',
 
 ]
 
@@ -37,7 +38,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
     ],
-    'PAGE_SIZE': 3
 }
 
 MIDDLEWARE = [
