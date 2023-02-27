@@ -1,11 +1,11 @@
-version: '3.9'
+version: '3.3'
 
 services:
   db:
     image: postgres:latest
     container_name: ulultrip_db
     ports:
-      - 5430:5432
+      - 5444:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -20,7 +20,7 @@ services:
     command: sh entrypoint.sh
     restart: always
     ports:
-      - 8000:8000
+      - 8888:8000
     depends_on:
       - db
     volumes:
@@ -32,7 +32,7 @@ services:
     container_name: ulultrip_nginx
     restart: on-failure
     ports:
-      - 80:80
+      - 88:80
     volumes:
       - ./static:/static
       - ./media:/media
