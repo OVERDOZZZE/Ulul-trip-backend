@@ -21,7 +21,7 @@ services:
       gunicorn -b 0.0.0.0:8000 config.wsgi --reload'
     restart: always
     ports:
-      - '8080:8000'
+      - '8888:8000'
     depends_on: 
       - db
     volumes:
