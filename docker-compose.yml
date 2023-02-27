@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: ulultrip_db
+    ports:
+      - 5430:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - ./.env
+  web:
+    build: ./
+    container_name: ulultrip_web
+    command: sh entrypoint.sh
+    restart: always
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - ./static:/app/static
+      - ./media:/app/media
+  nginx:
+    build: ./nginx
+    container_name: ulultrip_nginx
+    restart: on-failure
+    ports:
+      - 80:80
+    volumes:
+      - ./static:/static
+      - ./media:/media
+    depends_on:
+      - web
+volumes:
+  postgres_data:
