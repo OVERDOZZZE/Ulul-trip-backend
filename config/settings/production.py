@@ -40,6 +40,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://164.92.190.147:8888",
+    "http://164.92.190.147:88",
     "http://localhost:88"
 ]
 
@@ -48,7 +49,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://web:8000',
-    'http://localhost:88'
+    'http://localhost:88',
+    "http://164.92.190.147:88",
+    "http://164.92.190.147:8888",
+
 ]
 
 
