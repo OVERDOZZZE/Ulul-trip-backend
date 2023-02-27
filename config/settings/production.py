@@ -4,7 +4,7 @@ from decouple import config
 SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", default=False, cast=bool)
-ALLOWED_HOSTS = ["localhost", "164.92.190.147", "127.0.0.1"]
+ALLOWED_HOSTS = ['*']
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -40,4 +40,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://164.92.190.147:8888",
+    "http://localhost:88"
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://web:8000',
+    'http://localhost:88'
+]
+
+

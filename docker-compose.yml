@@ -5,9 +5,9 @@ services:
     image: postgres:latest
     container_name: ulultrip_db
     ports:
-      - 5444:5432
+      - '5444:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - 'postgres_data:/var/lib/postgresql/data'
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -17,25 +17,27 @@ services:
   web:
     build: ./
     container_name: ulultrip_web
-    command: sh entrypoint.sh
+    command: sh -c 'python manage.py migrate && python manage.py collectstatic --no-input &&
+      gunicorn -b 0.0.0.0:8000 config.wsgi --reload'
     restart: always
     ports:
-      - 8888:8000
-    depends_on:
+      - '8080:8000'
+    depends_on: 
       - db
     volumes:
-      - .:/app
-      - ./static:/app/static
-      - ./media:/app/media
+      - '.:/app'
+      - './static:/app/static'
+      - './media:/app/media'
   nginx:
     build: ./nginx
     container_name: ulultrip_nginx
-    restart: on-failure
+    restart: always
     ports:
-      - 88:80
+      - '88:80'
     volumes:
-      - ./static:/static
-      - ./media:/media
+      - './nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+      - './static:/static'
+      - './media:/media'
     depends_on:
       - web
 volumes:
