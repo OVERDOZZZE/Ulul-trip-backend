@@ -108,9 +108,9 @@ REST_FRAMEWORK = {
 }
 
 
-from .jazzmin import *
+from config.settings.jazzmin import *
 
 if PRODUCTION:
-    from .development import *
+    from config.settings.development import *
 else:
-    from .production import *
+    from config.settings.production import *
