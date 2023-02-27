@@ -31,10 +31,10 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'tour.apps.TourConfig',
     'rest_framework',
-    'rest_framework.authoken',
-    'Snail_Trip',
+    'rest_framework.authtoken',
+    'SnailTrip',
     'tour',
-    'user'
+    'user',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'SnailTrip.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ulul_trip_database',
+        'USER': 'test_master',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': 5432
     }
 }
 
