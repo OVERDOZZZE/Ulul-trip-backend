@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'djoser',
     'user.apps.UserConfig',
     'tour.apps.TourConfig',
     'django_filters',
