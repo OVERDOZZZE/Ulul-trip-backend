@@ -136,5 +136,6 @@ EMAIL_HOST_USER = 'ulul.trip.verify@gmail.com'
 EMAIL_HOST_PASSWORD = 'nebvlfuhobetkdzj'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
 
 PASSWORD_RESET_TIMEOUT = 14400

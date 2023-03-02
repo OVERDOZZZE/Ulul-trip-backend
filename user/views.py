@@ -1,14 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.tokens import PasswordResetTokenGenerator, default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.template import loader
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
@@ -80,27 +83,64 @@ def register_user(request):
         return Response(data)
 
 
-class ChangePasswordView(generics.UpdateAPIView):
-    serializer_class = ChangePasswordSerializer
-    model = User
-    permission_classes = (IsAuthenticated,)
-    def get_object(self, queryset=None):
-        obj = self.request.user
-        return obj
+# class ChangePasswordView(generics.UpdateAPIView):
+#     serializer_class = ChangePasswordSerializer
+#     model = User
+#     permission_classes = (IsAuthenticated,)
+#     def get_object(self, queryset=None):
+#         obj = self.request.user
+#         return obj
+#
+#     def update(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         serializer = self.get_serializer(data=request.data)
+#         if serializer.is_valid():
+#             if not self.object.check_password(serializer.data.get("old_password")):
+#                 return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+#             self.object.set_password(serializer.data.get("new_password"))
+#             self.object.save()
+#             response = {
+#                 'status': 'success',
+#                 'code': status.HTTP_200_OK,
+#                 'message': 'Password updated successfully',
+#                 'data': []
+#             }
+#             return Response(response)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            if not self.object.check_password(serializer.data.get("old_password")):
-                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
-                'data': []
+class PasswordResetView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        active_users = User.objects.filter(email__iexact=email, is_active=True)
+        for user in active_users:
+            # Make token
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            # Construct password reset url
+            reset_url = '{0}/reset/{1}/{2}'.format(settings.BASE_URL, uid, token)
+            # Email subject and template
+            subject = 'Password Reset'
+            email_template_name = 'password_reset_email.txt'
+            # Get template
+            email_template = loader.get_template(email_template_name)
+            # Context
+            context = {
+                'email': user.email,
+                'reset_url': reset_url
             }
-            return Response(response)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Render template
+            email_body = email_template.render(context)
+            # Construct email
+            email_message = EmailMessage(
+                subject=subject,
+                body=email_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.email]
+            )
+            # Send email
+            email_message.send()
+            # Return response
+            return Response({'detail': 'Password reset email sent.'})
+        return Response({'detail': 'No active user found with the given email.'})
+
+

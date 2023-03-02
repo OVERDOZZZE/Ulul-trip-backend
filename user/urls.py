@@ -11,7 +11,9 @@ urlpatterns = [
 
     path('activate/<uid64>/<token>', views.activate, name='activate'),
 
-    path('api/v1/change-password/', views.ChangePasswordView.as_view(), name='change-password'),
+    #path('api/v1/change-password/', views.ChangePasswordView.as_view(), name='change-password'),
+    path('api/v1/reset-password/', views.PasswordResetView.as_view(), name='reset-password'),
+
 ]
 
 
