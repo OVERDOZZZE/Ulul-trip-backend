@@ -17,5 +17,6 @@ urlpatterns = [
     path("profiles/", include("src.profiles.urls")),
     *urlpatterns,
 ]
-if settings.DEBUG:
+if config("DEBUG"):
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
