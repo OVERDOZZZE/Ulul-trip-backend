@@ -3,37 +3,42 @@ version: '3.3'
 services:
   db:
     image: postgres:latest
+    container_name: ulul_db
     restart: always
+    ports:
+      - '5534:5432'
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    env_file:
+      - ./.env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
   web:
-    build: .
+    build: ./
+    container_name: ulul_web
     restart: always
     command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic
-        --no-input && gunicorn -b 0.0.0.0:8087 core.wsgi --reload"
+        --no-input && gunicorn -b 0.0.0.0:8000 core.wsgi --reload"
     volumes:
-      - .:/app
-      - ./static:/static
-      - ./media:/media
+      - '.:/app'
+      - './static:/app/static'
+      - './media:/app/media'
     ports:
-      - '8087:8087'
+      - '8087:8000'
     depends_on:
       - db
-
   nginx:
-    image: nginx:latest
+    build: ./nginx
+    restart: always
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - './nginx/default.conf:/etc/nginx/conf.d/default.conf'
+      - './static:/static'
+      - './media:/media'
     depends_on:
       - web
-      - db
     ports:
-      - '82:82'
-      - '441:441'
-
+      - '82:80'
 volumes:
   postgres_data:
