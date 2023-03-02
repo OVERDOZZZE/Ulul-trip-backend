@@ -1,6 +1,6 @@
 from .base import *
 from decouple import config
-
+from datetime import  timedelta
 SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", default=True, cast=bool)

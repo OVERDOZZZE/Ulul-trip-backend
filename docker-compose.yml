@@ -35,7 +35,7 @@ services:
     container_name: ulul_nginx
     restart: always
     ports:
-      - '87:80'
+      - '81:80'
       - '441:443'
     volumes:
       - ./static:/static

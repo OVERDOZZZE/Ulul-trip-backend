@@ -29,6 +29,7 @@ DATABASES = {
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_FROM = config("EMAIL_FROM")
+
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
@@ -39,8 +40,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://164.92.190.147:8888",
-    "http://164.92.190.147:88",
+    "http://164.92.190.147:8087",
+    "http://164.92.190.147:81",
     "http://localhost:88"
 ]
 
@@ -48,10 +49,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
-    'http://web:8000',
+    'http://ulul:8000',
     'http://localhost:88',
-    "http://164.92.190.147:88",
-    "http://164.92.190.147:8888",
+    "http://164.92.190.147:81",
+    "http://164.92.190.147:8087",
 
 ]
 
