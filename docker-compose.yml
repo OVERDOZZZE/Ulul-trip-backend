@@ -11,7 +11,7 @@ services:
       - ./static:/home/app/static
       - ./media:/home/app/media
     ports:
-      - 8080:8000
+      - '8087:8000'
     env_file:
       - ./.env
     depends_on:
@@ -29,13 +29,13 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - '5444:5432'
+      - '5447:5432'
   nginx:
     build: ./nginx
     container_name: ulultrip_nginx
     restart: always
     ports:
-      - '88:80'
+      - '87:80'
       - '443:443'
     volumes:
       - ./static:/static
