@@ -36,7 +36,7 @@ services:
     restart: always
     ports:
       - '87:80'
-      - '449:443'
+      - '441:443'
     volumes:
       - ./static:/static
       - ./media:/media
