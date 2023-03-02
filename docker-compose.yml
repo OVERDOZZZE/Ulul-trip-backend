@@ -1,24 +1,9 @@
 version: '3.3'
 
 services:
-  web:
-    build: ./
-    container_name: ulul_web
-    restart: always
-    command: bash entrypoint.sh
-    volumes:
-      - .:/home/app
-      - ./static:/home/app/static
-      - ./media:/home/app/media
-    ports:
-      - '8087:8087'
-    env_file:
-      - ./.env
-    depends_on:
-      - db
-
   db:
     image: postgres:latest
+    restart: always
     container_name: ulul_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -30,6 +15,20 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - '5447:5432'
+  web:
+    build: .
+    container_name: ulul_web
+    restart: always
+    command: bash entrypoint.sh
+    volumes:
+      - .:/home/app
+      - ./static:/home/app/static
+      - ./media:/home/app/media
+    ports:
+      - '8087:8087'
+    depends_on:
+      - db
+
   nginx:
     image: nginx:latest
     container_name: ulul_nginx
