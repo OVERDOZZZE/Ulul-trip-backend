@@ -3,7 +3,7 @@ version: '3.3'
 services:
   web:
     build: ./
-    container_name: ulultrip_web
+    container_name: ulul_web
     restart: always
     command: bash entrypoint.sh
     volumes:
@@ -19,7 +19,7 @@ services:
 
   db:
     image: postgres:latest
-    container_name: ulultrip_db
+    container_name: ulul_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
@@ -32,7 +32,7 @@ services:
       - '5447:5432'
   nginx:
     build: ./nginx
-    container_name: ulultrip_nginx
+    container_name: ulul_nginx
     restart: always
     ports:
       - '87:80'
