@@ -4,17 +4,19 @@ from datetime import timedelta
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-PRODUCTION = False
+PRODUCTION = True
 APPS = [
-    "src.tour.apps.TourConfig",
-    "src.user.apps.UserConfig",
+    "src.profiles",
+    "src.users",
+    "src.tour",
 ]
+AUTH_USER_MODEL = 'users.User'
 INSTALLED_LIBRARIES = [
-    "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework",
     "django_filters",
-    "drf_yasg",
     "corsheaders",
+    "drf_yasg",
 ]
 THEME_APPS = ["jazzmin"]
 INSTALLED_APPS = [
@@ -41,7 +43,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
 ]
 
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
@@ -59,7 +61,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "config.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -108,9 +110,9 @@ REST_FRAMEWORK = {
 }
 
 
-from config.settings.jazzmin import *
+from .jazzmin import *
 
 if PRODUCTION:
-    from config.settings.development import *
+    from .development import *
 else:
-    from config.settings.production import *
+    from .production import *

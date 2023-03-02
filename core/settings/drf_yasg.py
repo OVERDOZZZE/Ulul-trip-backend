@@ -5,7 +5,7 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="All of project API",
+        title="Ulul Trip API",
         default_version="v1",
         description="Description not provided yet",
         terms_of_service="https://www.google.com/policies/terms/",

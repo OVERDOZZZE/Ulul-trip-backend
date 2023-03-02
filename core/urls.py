@@ -12,5 +12,7 @@ urlpatterns = [
     path("tour/", include("src.tour.urls")),
     path("auth/", include("rest_framework.urls")),
     path("local/", include("django.conf.urls.i18n")),
+    path("users/", include("src.users.urls")),
+    path("profiles/", include("src.profiles.urls")),
     *urlpatterns,
 ]
