@@ -6,7 +6,7 @@ from src.users.registration_validators import validate_number
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
-    slug = serializers.HiddenField(default='')
+    user_slug = serializers.HiddenField(default='')
     name = serializers.CharField(max_length=100, min_length=2,
                                  help_text='Name should contain only alphabetical characters')
     number = serializers.CharField(max_length=9,
@@ -18,7 +18,7 @@ class ProfileEditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'slug', 'name', 'username', 'number', 'image']
+        fields = ['id', 'user_slug', 'name', 'username', 'number', 'image']
 
     def validate(self, attrs):
         name = attrs.get('name', '')

@@ -4,6 +4,7 @@ from django.conf.urls.i18n import i18n_patterns
 from .settings.drf_yasg import urlpatterns
 from django.conf import settings
 from django.conf.urls.static import static
+from decouple import config
 admin.site.site_header = "Моя админка"
 admin.site.index_title = "Мои модели"
 

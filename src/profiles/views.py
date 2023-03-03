@@ -19,7 +19,7 @@ class ProfileEditViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = ProfileEditSerializer
-    lookup_field = 'slug'
+    lookup_field = 'user_slug'
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -43,7 +43,7 @@ class ProfileChangePasswordViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = ChangePasswordSerializer
-    lookup_field = 'slug'
+    lookup_field = 'user_slug'
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
