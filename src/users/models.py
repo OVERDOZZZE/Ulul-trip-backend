@@ -46,7 +46,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False,help_text='админ')
     is_active = models.BooleanField(default=True)
     name = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = 'email'
