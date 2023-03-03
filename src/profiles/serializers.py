@@ -1,6 +1,5 @@
 from django.contrib.auth import password_validation
 from rest_framework import serializers, exceptions
-from .models import UserReview
 from src.users.models import User
 from src.users.registration_validators import validate_number
 
@@ -82,28 +81,3 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return password_new
 
 
-class ProfileReviewSerializer(serializers.ModelSerializer):
-    rate = serializers.IntegerField(min_value=0)
-    review = serializers.CharField()
-    user = serializers.SerializerMethodField()
-
-    class Meta:
-        model = UserReview
-        fields = ('id', 'rate', 'review', 'user')
-
-    def get_user(self, instance):
-        return instance.user.username
-
-
-class ProfileReviewUpdateSerializer(serializers.ModelSerializer):
-    rate = serializers.IntegerField(min_value=0)
-    review = serializers.CharField()
-    user = serializers.SerializerMethodField()
-    user_slug = serializers.HiddenField(default='')
-
-    class Meta:
-        model = UserReview
-        fields = ('user_slug', 'rate', 'review', 'user')
-
-    def get_user(self, instance):
-        return instance.user.username

@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import UserReview
 #
 #
 # # Register your models here.
@@ -14,4 +13,3 @@ from .models import UserReview
 #     readonly_fields = ('password', 'is_verified')
 #
 #
-admin.site.register(UserReview)

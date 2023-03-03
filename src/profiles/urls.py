@@ -1,14 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
-
-get_post = {'get': 'list',
-            'post': 'create'}
-get_put_delete = {'get': 'retrieve',
-                  'put': 'update',
-                  'delete': 'destroy'}
+from rest_framework.routers import SimpleRouter
+router = SimpleRouter()
+router.register("update",views.ProfileEditViewSet, basename="users_edit")
+router.register("change-password",views.ProfileChangePasswordViewSet, basename="users_change_password")
 urlpatterns = [
-    path('<slug:user_slug>/', views.ProfileEditViewSet.as_view(get_put_delete)),
-    path('<slug:slug>/update/', views.ProfileEditViewSet.as_view(get_put_delete)),
-    path('<slug:slug>/change-password/', views.ProfileChangePasswordViewSet.as_view(get_put_delete)),
-    path('<slug:slug>/review/', views.ProfileReviewUpdateViewSet.as_view(get_put_delete))
+    path('',include(router.urls))
 ]

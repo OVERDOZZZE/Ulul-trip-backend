@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import status, exceptions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -6,11 +5,8 @@ from src.users.models import User
 from .serializers import (
     ProfileEditSerializer,
     ChangePasswordSerializer,
-    ProfileReviewSerializer,
-    ProfileReviewUpdateSerializer
 )
 
-from .models import UserReview
 from rest_framework import permissions
 
 
@@ -20,6 +16,7 @@ class ProfileEditViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = ProfileEditSerializer
     lookup_field = 'user_slug'
+    http_method_names = ('put',)
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -44,6 +41,7 @@ class ProfileChangePasswordViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = ChangePasswordSerializer
     lookup_field = 'user_slug'
+    http_method_names = ('patch',)
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -61,43 +59,4 @@ class ProfileChangePasswordViewSet(ModelViewSet):
         user.set_password(password_new_again)
         user.save()
         return Response(data=self.serializer_class(user).data,
-                        status=status.HTTP_201_CREATED)
-
-
-class ProfileReviewViewSet(ModelViewSet):
-    queryset = UserReview.objects.all()
-    serializer_class = ProfileReviewSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    lookup_field = 'id'
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = User.objects.get(username=request.user.username)
-        review = serializer.validated_data.get('review')
-        rate = serializer.validated_data.get('rate')
-        user_review = UserReview.objects.create(user=user, review=review, rate=rate)
-        user_review.save()
-        return Response(data=self.serializer_class(user_review).data,
-                        status=status.HTTP_201_CREATED)
-
-
-class ProfileReviewUpdateViewSet(ModelViewSet):
-    queryset = UserReview.objects.all()
-    serializer_class = ProfileReviewUpdateSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    lookup_field = 'slug'
-
-    def update(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = User.objects.get(username=request.user.username)
-        review = serializer.validated_data.get('review')
-        rate = serializer.validated_data.get('rate')
-        user_review = UserReview.objects.get(user=user)
-        user_review.review = review
-        user_review.rate = rate
-        user_review.user = user
-        user_review.save()
-        return Response(data=self.serializer_class(user_review).data,
                         status=status.HTTP_201_CREATED)
