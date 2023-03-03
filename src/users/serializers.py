@@ -33,10 +33,11 @@ class RegisterSerializer(serializers.ModelSerializer):
                                               'Number should contain only digits'))
     username = serializers.CharField(max_length=30, min_length=2,
                                      help_text='Username should contain only alphanumeric characters')
+    tokens = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'username', 'email', 'number', 'password', 'password_again']
+        fields = ['id', 'name', 'username', 'email', 'number', 'password', 'password_again','tokens']
 
     def validate(self, attrs):
         name = attrs.get('name', '')
@@ -88,6 +89,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.number = f'+996{number}'
         user.save()
         return user
+    def get_tokens(self, obj):
+        user = User.objects.get(email=obj['email'])
+        if user.is_verified:
+            return {
+                'refresh': user.tokens()['refresh'],
+                'access': user.tokens()['access']
+            }
+
 
 
 class EmailVerifySerializer(serializers.ModelSerializer):
