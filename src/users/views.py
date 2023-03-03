@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer, \
-    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer, LogOutSerializer
+    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .utils import Util

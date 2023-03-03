@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db.utils import IntegrityError
 from django.utils.safestring import mark_safe
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import exceptions
 from .utils import path_and_rename3
 from pytils import translit
 
@@ -15,12 +13,6 @@ class UserManager(BaseUserManager):
             raise TypeError('Users should have email')
         user = self.model(username=username, name=name, email=self.normalize_email(email), number=number)
         user.set_password(password)
-        datas = (username, number, email)
-        for data in datas:
-            try:
-                user.save()
-            except IntegrityError:
-                raise exceptions.ValidationError(f'This {data} is not available, please write another one')
         return user
 
     def create_superuser(self, email, password, username, name, number):
@@ -29,7 +21,6 @@ class UserManager(BaseUserManager):
         user = self.create_user(username, name, email, password, number)
         user.is_superuser = True
         user.is_staff = True
-        user.set_password(password)
         user.save()
         return user
 
