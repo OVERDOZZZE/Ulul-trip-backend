@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('profiles', '0003_remove_userreview_user'),
+        ("profiles", "0003_remove_userreview_user"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='userreview',
-            name='user',
-            field=models.CharField(default='', max_length=50),
+            model_name="userreview",
+            name="user",
+            field=models.CharField(default="", max_length=50),
             preserve_default=False,
         ),
     ]

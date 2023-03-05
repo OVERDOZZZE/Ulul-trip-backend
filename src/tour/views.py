@@ -3,7 +3,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Tour, Review, Category, Region, Guide
 from .permissions import IsOwnerOrReadOnly
-from .serializers import GuideSerializer, TourSerializer, ReviewSerializer, RegionSerializer, CategorySerializer
+from .serializers import (
+    GuideSerializer,
+    TourSerializer,
+    ReviewSerializer,
+    RegionSerializer,
+    CategorySerializer,
+)
 from django_filters.rest_framework import DjangoFilterBackend
 from .service import TourFilter
 

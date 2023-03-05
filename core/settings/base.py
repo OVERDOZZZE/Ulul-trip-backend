@@ -9,25 +9,31 @@ APPS = [
     "src.users",
     "src.tour",
 ]
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 INSTALLED_LIBRARIES = [
     "rest_framework_simplejwt",
     "rest_framework",
     "django_filters",
     "corsheaders",
     "drf_yasg",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
 ]
 THEME_APPS = ["jazzmin"]
 INSTALLED_APPS = [
     *THEME_APPS,
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     *INSTALLED_LIBRARIES,
     *APPS,
+    "django.contrib.admin",
 ]
 
 MIDDLEWARE = [
@@ -75,6 +81,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
+    {
+        "NAME": "src.users.registration_validators.IsIncludeOneDigit",
+    },
+    {
+        "NAME": "src.users.registration_validators.IsIncludeOnlyLatyn",
+    },
 ]
 
 # LANGUAGE_CODE = 'en-us'
@@ -93,8 +105,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = BASE_DIR / "mediafiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

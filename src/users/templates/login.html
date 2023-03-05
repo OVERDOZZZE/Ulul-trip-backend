@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% load socialaccount %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<form class="box" action="" method="post" clas="login">
+    {% csrf_token %}
+            <div class="buttons">
+                <button class="btn btn-outline-info">
+                    <a href="{% provider_login_url 'google'%}?next=/">
+                            <i class="fab fa-google"></i>
+                            Login with Google
+                        </a>
+                    </button>
+    </div>
+</form>
+</body>
+</html>

@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,13 +14,44 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='UserReview',
+            name="UserReview",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('review', models.CharField(blank=True, default='', max_length=150, null=True)),
-                ('created_date', models.DateField(auto_now_add=True)),
-                ('rate', models.IntegerField(blank=True, choices=[('⭐', '1'), ('⭐⭐', '2'), ('⭐⭐⭐', '3'), ('⭐⭐⭐⭐', '4'), ('⭐⭐⭐⭐⭐', '5')], default=0, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "review",
+                    models.CharField(blank=True, default="", max_length=150, null=True),
+                ),
+                ("created_date", models.DateField(auto_now_add=True)),
+                (
+                    "rate",
+                    models.IntegerField(
+                        blank=True,
+                        choices=[
+                            ("⭐", "1"),
+                            ("⭐⭐", "2"),
+                            ("⭐⭐⭐", "3"),
+                            ("⭐⭐⭐⭐", "4"),
+                            ("⭐⭐⭐⭐⭐", "5"),
+                        ],
+                        default=0,
+                        null=True,
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

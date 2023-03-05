@@ -5,15 +5,18 @@ import src.users.utils
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='image',
-            field=models.ImageField(blank=True, default='media/default_images/default_user_image.jpeg', null=True, upload_to=src.users.utils.path_and_rename3),
+            model_name="user",
+            name="image",
+            field=models.ImageField(
+                blank=True,
+                default="media/default_images/default_user_image.jpeg",
+                null=True,
+            ),
         ),
     ]

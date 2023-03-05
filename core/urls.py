@@ -5,8 +5,8 @@ from .settings.drf_yasg import urlpatterns
 from django.conf import settings
 from django.conf.urls.static import static
 from decouple import config
-admin.site.site_header = "Моя админка"
-admin.site.index_title = "Мои модели"
+admin.site.site_header = "Административная панель"
+admin.site.index_title = "Модели"
 
 urlpatterns = [
     path("admin/", admin.site.urls, name="admin"),
@@ -14,6 +14,7 @@ urlpatterns = [
     path("local/", include("django.conf.urls.i18n")),
     path("users/", include("src.users.urls")),
     path("profiles/", include("src.profiles.urls")),
+    path('', include('allauth.urls')),
     *urlpatterns,
 ]
 if config("DEBUG"):

@@ -5,26 +5,41 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('profiles', '0001_initial'),
+        ("profiles", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BaseModel',
+            name="BaseModel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='userreview',
-            name='id',
+            model_name="userreview",
+            name="id",
         ),
         migrations.AddField(
-            model_name='userreview',
-            name='basemodel_ptr',
-            field=models.OneToOneField(auto_created=True, default='', on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='profiles.basemodel'),
+            model_name="userreview",
+            name="basemodel_ptr",
+            field=models.OneToOneField(
+                auto_created=True,
+                default="",
+                on_delete=django.db.models.deletion.CASCADE,
+                parent_link=True,
+                primary_key=True,
+                serialize=False,
+                to="profiles.basemodel",
+            ),
             preserve_default=False,
         ),
     ]
