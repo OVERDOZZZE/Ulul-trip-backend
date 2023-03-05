@@ -113,8 +113,7 @@ class LoginSerializer(serializers.Serializer):
             "email": user.email,
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "access_token": user.tokens()["access"],
-            "refresh_token": user.tokens()["refresh"],
+            "tokens": user.tokens(),
         }
 
 

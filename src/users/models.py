@@ -21,10 +21,10 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         return user
 
-    def create_superuser(self, email, password, username, name, **extra_fields):
+    def create_superuser(self, email, password, last_name, first_name, **extra_fields):
         if password is None:
             raise TypeError("Password should not be none")
-        user = self.create_user(username, name, email, password, **extra_fields)
+        user = self.create_user(first_name, last_name, email, password, **extra_fields)
         user.is_superuser = True
         user.is_staff = True
         user.save()
@@ -53,4 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)
-        return {"access": str(refresh.access_token), "refresh": str(refresh)}
+        return {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }

@@ -1,7 +1,6 @@
-from django.contrib.auth import password_validation
+from django.contrib.auth import password_validation, get_user_model
 from rest_framework import serializers
 from src.users.models import User
-from rest_framework.validators import UniqueValidator
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
@@ -18,7 +17,7 @@ class ProfileEditSerializer(serializers.ModelSerializer):
         help_text="Username should contain only alphanumeric characters",
     )
     email = serializers.EmailField(
-        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
+        required=True
     )
 
     class Meta:
@@ -69,27 +68,3 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("email", "password_old", "password_new", "password_new_again")
-#
-#
-# class DeleteProfileSerializer(serializers.Serializer):
-#     password = serializers.CharField(
-#         max_length=20,required=True
-#     )
-#
-#     confirm_password = serializers.CharField(
-#         max_length=20,required=True
-#     )
-#     class Meta:
-#         model = User
-#         fields = ('password','confirm_password')
-#
-#     def validate(self, data):
-#         password = data.get('password')
-#         confirm_password = data.get('confirm_password')
-#
-#         if password != confirm_password:
-#             raise serializers.ValidationError(
-#                 {"Error": "Your passwords didn't match."}
-#             )
-#
-#         return data

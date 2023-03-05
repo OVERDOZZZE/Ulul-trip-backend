@@ -28,8 +28,8 @@ DATABASES = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "http://164.92.190.147:8080",
     "http://164.92.190.147:82",
     "http://localhost:88",
@@ -38,8 +38,8 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
     "http://ulul:8000",
     "http://localhost:82",
     "http://164.92.190.147:82",
