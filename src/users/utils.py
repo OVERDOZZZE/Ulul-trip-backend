@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 from django.core.mail import EmailMessage
 
 
@@ -10,3 +13,11 @@ class Util:
             to=[data["to_email"]],
         )
         email.send()
+
+
+def path_and_rename(instance, filename):
+    now = datetime.now()
+    upload_to = "media"
+    ext = filename.split(".")[-1]
+    filename = f'{instance.tour.title}{now.strftime("%d-%m-%Y")}.{ext}'
+    return os.path.join(upload_to, filename)

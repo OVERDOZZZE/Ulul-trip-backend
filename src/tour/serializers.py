@@ -7,7 +7,7 @@ from .models import Tour, Review, Category, Region, Guide, Images
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = "is_main image".split()
+        fields = "is_main images".split()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -31,18 +31,27 @@ class RegionSerializer(serializers.ModelSerializer):
 
 
 class TourSerializer(serializers.ModelSerializer):
-    tour_images = ImageSerializer(many=True)
+    tour_images = ImageSerializer(many=True, read_only=True)
     guide = GuideSerializer()
-    region = RegionSerializer()
+    region = RegionSerializer(many=True, read_only=True)
     category = CategorySerializer()
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True)
 
     class Meta:
         model = Tour
         fields = (
             "id title description price guide date_departure date_arrival date_published"
             " region is_hot duration complexity category average_rating quantity_limit"
-            " set_actual_limit tour_images slug".split()
+            " set_actual_limit tour_images slug uploaded_images".split()
         )
+
+        def create(self, validated_data):
+            uploaded_data = validated_data.pop('uploaded_images')
+            tour = Tour.objects.create(**validated_data)
+            for uploaded_item in uploaded_data:
+                Images.objects.create(tour=tour, images=uploaded_item)
+            return tour
 
 
 class ShortTourSerializer(serializers.ModelSerializer):

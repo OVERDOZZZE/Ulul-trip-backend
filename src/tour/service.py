@@ -12,9 +12,8 @@ class TourFilter(filters.FilterSet):
     guide = CharFilterInFilter(field_name="guide__slug", lookup_expr="in")
     complexity = CharFilterInFilter(field_name="complexity", lookup_expr="in")
     duration = CharFilterInFilter(field_name="duration", lookup_expr="in")
-    date_departure = filters.DateRangeFilter()
     price = filters.RangeFilter(field_name="price", lookup_expr="in")
-    # date_departure = filters.DateFilter()
+    date_departure = filters.DateFilter()
 
     class Meta:
         model = Tour

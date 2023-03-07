@@ -94,7 +94,7 @@ class EmailVerifySerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    password = serializers.CharField(write_only=True,style={"input_type":"password"})
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     tokens = serializers.CharField(read_only=True)

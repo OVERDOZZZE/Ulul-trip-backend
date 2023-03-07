@@ -22,7 +22,6 @@ class GuideListView(generics.ListAPIView):
 class TourListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TourFilter
-
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
 
