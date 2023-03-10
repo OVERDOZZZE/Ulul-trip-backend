@@ -1,14 +1,19 @@
-from rest_framework import status, exceptions
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, get_object_or_404
+from rest_framework import status, exceptions, permissions, generics
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from src.users.models import User
+from .exceptions import UserNotFoundException, TourNotFoundException
 from .serializers import (
     ProfileEditSerializer,
     ChangePasswordSerializer,
+    AddToFavoriteSerializer,
+    ProfileSerializer,
+    RequestEmailValidateSerializer
 )
-from rest_framework import permissions
+from src.tour.models import Tour
+from .services import ProfileService
+
 
 class ProfileChangePasswordViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
@@ -41,10 +46,95 @@ class ProfileChangePasswordViewSet(ModelViewSet):
 
 class UsersDetailUpdateDelete(ModelViewSet):
     serializer_class = ProfileEditSerializer
-    permission_classes = [
-        permissions.IsAuthenticated,
-    ]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
-    http_method_names = ("put","patch","delete")
+    http_method_names = ("put", "get", "delete")
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = User.objects.get(id=request.user.id)
+            ProfileService.send_email(user=user, email=serializer.validated_data.get("email"))
+            user.first_name = serializer.validated_data.get("first_name")
+            user.last_name = serializer.validated_data.get("last_name")
+            user.email = serializer.validated_data.get("email")
+            user.save()
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors)
 
 
+class FavoriteTourApiView(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = AddToFavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, slug):
+        try:
+            user = get_object_or_404(User, id=request.user.id)
+            serializer = ProfileSerializer(user, many=False)
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
+        except:
+            raise UserNotFoundException()
+
+    def post(self, request, slug):
+        try:
+            user = request.user
+            tour = get_object_or_404(Tour, slug=slug)
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                ProfileService.add_to_favorite(user, tour)
+                return Response("Ok")
+            return Response(serializer.errors)
+        except:
+            raise TourNotFoundException()
+
+    def delete(self, request, slug):
+        try:
+            user = request.user
+            tour = get_object_or_404(Tour, slug=slug)
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                ProfileService.remove_from_favorite(user, tour)
+                return Response("Ok")
+            return Response(serializer.errors)
+        except:
+            raise TourNotFoundException()
+
+
+class GetFavoriteTourApiView(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = ProfileSerializer
+
+    def get(self, request, id):
+        try:
+            user = User.objects.get(id=id)
+            serializer = self.serializer_class(user, many=False)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except:
+            raise UserNotFoundException()
+
+
+class RequestEmailValidateApiView(generics.GenericAPIView):
+    serializer_class = RequestEmailValidateSerializer
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def send(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = User.objects.get(id=request.user.id)
+            email = serializer.validated_data.get("email")
+            ProfileService.send_email(user, email)
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            email = serializer.validated_data.get("email")
+            user = User.objects.get(id=request.user.id)
+            if user.is_verified:
+                user.email = email
+                user.save()
+            else:
+                user.email = request.user.email
+                user.save()
+            return Response(status=status.HTTP_201_CREATED, data=serializer.data)

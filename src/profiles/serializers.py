@@ -1,6 +1,8 @@
-from django.contrib.auth import password_validation, get_user_model
+from django.contrib.auth import password_validation
 from rest_framework import serializers
 from src.users.models import User
+from src.tour.models import Tour
+from rest_framework.validators import UniqueValidator
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
@@ -16,9 +18,7 @@ class ProfileEditSerializer(serializers.ModelSerializer):
         required=True,
         help_text="Username should contain only alphanumeric characters",
     )
-    email = serializers.EmailField(
-        required=True
-    )
+    email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
@@ -36,21 +36,18 @@ class ProfileEditSerializer(serializers.ModelSerializer):
                 f"The users first_name  should only contain alphabetical characters",
                 400,
             )
+
         return super().validate(attrs)
 
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password_old = serializers.CharField(
-        max_length=30,
-        min_length=6,
         required=True,
         write_only=True,
         style={"input_type": "password"},
     )
     password_new_again = serializers.CharField(
-        max_length=30,
-        min_length=6,
         required=True,
         write_only=True,
         validators=[password_validation.validate_password],
@@ -68,3 +65,29 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("email", "password_old", "password_new", "password_new_again")
+
+
+class FavoriteTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = "__all__"
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    favorite_tour = FavoriteTourSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ("id", "first_name", "last_name", "email", "favorite_tour")
+
+
+class AddToFavoriteSerializer(serializers.ModelSerializer):
+    favorite_tour = serializers.SlugRelatedField(slug_field=Tour.slug, read_only=True)
+
+    class Meta:
+        model = Tour
+        fields = ("favorite_tour",)
+
+
+class RequestEmailValidateSerializer(serializers.Serializer):
+    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())])

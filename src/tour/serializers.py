@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField, StringRelatedField
-
+from rest_framework.relations import StringRelatedField
 from .models import Tour, Review, Category, Region, Guide, Images
 
 
@@ -36,7 +35,11 @@ class TourSerializer(serializers.ModelSerializer):
     region = RegionSerializer(many=True, read_only=True)
     category = CategorySerializer()
     uploaded_images = serializers.ListField(
-        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False), write_only=True)
+        child=serializers.ImageField(
+            max_length=1000000, allow_empty_file=False, use_url=False
+        ),
+        write_only=True,
+    )
 
     class Meta:
         model = Tour
@@ -47,7 +50,7 @@ class TourSerializer(serializers.ModelSerializer):
         )
 
         def create(self, validated_data):
-            uploaded_data = validated_data.pop('uploaded_images')
+            uploaded_data = validated_data.pop("uploaded_images")
             tour = Tour.objects.create(**validated_data)
             for uploaded_item in uploaded_data:
                 Images.objects.create(tour=tour, images=uploaded_item)

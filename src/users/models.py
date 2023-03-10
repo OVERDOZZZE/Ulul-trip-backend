@@ -41,6 +41,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    favorite_tour = models.ManyToManyField(
+        "tour.Tour",
+        related_name="favorite_tour",
+        verbose_name="Избранные",
+    )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [
         "last_name",
@@ -53,7 +58,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)
-        return {
-            "access": str(refresh.access_token),
-            "refresh": str(refresh)
-        }
+        return {"access": str(refresh.access_token), "refresh": str(refresh)}

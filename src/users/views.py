@@ -154,5 +154,7 @@ class SetNewPasswordView(generics.GenericAPIView):
             {"success": True, "message": "Password reset success"},
             status=status.HTTP_200_OK,
         )
+
+
 def main(request):
-    return render(request, 'user/login.html')
+    return render(request, "user/login.html")

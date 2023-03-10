@@ -5,16 +5,17 @@ from .settings.drf_yasg import urlpatterns
 from django.conf import settings
 from django.conf.urls.static import static
 from decouple import config
+
 admin.site.site_header = "Административная панель"
 admin.site.index_title = "Модели"
 
 urlpatterns = [
     path("admin/", admin.site.urls, name="admin"),
-    path("tour/", include("src.tour.urls")),
+    path("home/", include("src.tour.urls")),
     path("local/", include("django.conf.urls.i18n")),
     path("users/", include("src.users.urls")),
     path("profiles/", include("src.profiles.urls")),
-    path('', include('allauth.urls')),
+    path("", include("allauth.urls")),
     *urlpatterns,
 ]
 if config("DEBUG"):

@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from src.users.utils import path_and_rename
 
+
 class Guide(models.Model):
     class Meta:
         verbose_name = "Guide"
@@ -76,8 +77,12 @@ class Images(models.Model):
         verbose_name = "Image"
         verbose_name_plural = "Images"
 
-    images = models.FileField(upload_to=path_and_rename,
-                              validators=[FileExtensionValidator(allowed_extensions=["png", "img", "jpg", "jpeg"])])
+    images = models.FileField(
+        upload_to=path_and_rename,
+        validators=[
+            FileExtensionValidator(allowed_extensions=["png", "img", "jpg", "jpeg"])
+        ],
+    )
     tour = models.ForeignKey(
         "Tour", on_delete=models.CASCADE, related_name="tour_images"
     )
@@ -108,7 +113,7 @@ class Tour(models.Model):
     date_published = models.DateField(auto_now=True)
     date_departure = models.DateField()
     date_arrival = models.DateField()
-    region = models.ManyToManyField(Region, related_name='tour_region')
+    region = models.ManyToManyField(Region, related_name="tour_region")
     quantity_limit = models.PositiveIntegerField(blank=True)
     actual_limit = models.PositiveIntegerField(editable=False, blank=True, null=True)
     is_hot = models.BooleanField(default=False)

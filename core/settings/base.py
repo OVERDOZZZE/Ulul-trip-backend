@@ -16,11 +16,10 @@ INSTALLED_LIBRARIES = [
     "django_filters",
     "corsheaders",
     "drf_yasg",
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 THEME_APPS = ["jazzmin"]
 INSTALLED_APPS = [
