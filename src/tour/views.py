@@ -9,9 +9,11 @@ from .serializers import (
     ReviewSerializer,
     RegionSerializer,
     CategorySerializer,
+    GetTitleSlugSerializer,
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from .service import TourFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 class GuideListView(generics.ListAPIView):
@@ -20,17 +22,17 @@ class GuideListView(generics.ListAPIView):
 
 
 class TourListView(generics.ListAPIView):
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = TourFilter
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
+    search_fields = ("^title",)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-
-    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -70,3 +72,8 @@ def tour_list_view(request, slug):
     tour = Tour.objects.filter(slug=slug)
     serializer = TourSerializer(tour, many=True)
     return Response(data=serializer.data)
+
+
+class GetSlugTitleListView(generics.ListAPIView):
+    queryset = Tour.objects.all()
+    serializer_class = GetTitleSlugSerializer

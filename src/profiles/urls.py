@@ -14,5 +14,5 @@ urlpatterns = [
     path("", include(router.urls)),
     path("verify-email/", VerifyEmailView.as_view(), name="update_profile"),
     path("<int:id>/favorites/", views.GetFavoriteTourApiView.as_view()),
-    path("request-email-validate/",views.RequestEmailValidateApiView.as_view())
+    path("request-email-validate/", views.RequestEmailValidateApiView.as_view()),
 ]

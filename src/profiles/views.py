@@ -9,7 +9,7 @@ from .serializers import (
     ChangePasswordSerializer,
     AddToFavoriteSerializer,
     ProfileSerializer,
-    RequestEmailValidateSerializer
+    RequestEmailValidateSerializer,
 )
 from src.tour.models import Tour
 from .services import ProfileService
@@ -54,7 +54,9 @@ class UsersDetailUpdateDelete(ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = User.objects.get(id=request.user.id)
-            ProfileService.send_email(user=user, email=serializer.validated_data.get("email"))
+            ProfileService.send_email(
+                user=user, email=serializer.validated_data.get("email")
+            )
             user.first_name = serializer.validated_data.get("first_name")
             user.last_name = serializer.validated_data.get("last_name")
             user.email = serializer.validated_data.get("email")

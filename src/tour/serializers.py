@@ -69,3 +69,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = "id text author post rating date_published".split()
+
+
+class GetTitleSlugSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = ("id", "slug", "category", "price", "title")

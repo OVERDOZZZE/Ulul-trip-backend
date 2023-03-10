@@ -5,35 +5,43 @@ from src.tour.models import Tour
 from rest_framework.validators import UniqueValidator
 
 
+class FavoriteTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = "__all__"
+
+
 class ProfileEditSerializer(serializers.ModelSerializer):
-    last_name = serializers.CharField(
+    name = serializers.CharField(
         max_length=30,
         min_length=2,
         required=True,
         help_text="Name should contain only alphabetical characters",
     )
-    first_name = serializers.CharField(
+    username = serializers.CharField(
         max_length=30,
         min_length=2,
         required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())],
         help_text="Username should contain only alphanumeric characters",
     )
     email = serializers.EmailField(required=True)
+    favorite_tour = FavoriteTourSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "email"]
+        fields = ["id", "username", "name", "email", "favorite_tour"]
 
     def validate(self, attrs):
-        last_name = attrs.get("last_name", "")
-        first_name = attrs.get("first_name", "")
-        if not last_name.isalpha():
+        name = attrs.get("name", "")
+        username = attrs.get("username", "")
+        if not name.isalpha() or name.isalpha() and name.count(" ") == 1:
             raise serializers.ValidationError(
-                f"The users last_name  should only contain alphabetical characters"
+                f"The users name  should only contain alphabetical characters", 400
             )
-        if not first_name.isalpha():
+        if not username.isalnum():
             raise serializers.ValidationError(
-                f"The users first_name  should only contain alphabetical characters",
+                f"The users username  should only contain alphanumerical characters",
                 400,
             )
 
@@ -67,18 +75,12 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         fields = ("email", "password_old", "password_new", "password_new_again")
 
 
-class FavoriteTourSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tour
-        fields = "__all__"
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     favorite_tour = FavoriteTourSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ("id", "first_name", "last_name", "email", "favorite_tour")
+        fields = ("id", "name", "username", "email", "favorite_tour")
 
 
 class AddToFavoriteSerializer(serializers.ModelSerializer):
@@ -90,4 +92,6 @@ class AddToFavoriteSerializer(serializers.ModelSerializer):
 
 
 class RequestEmailValidateSerializer(serializers.Serializer):
-    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )

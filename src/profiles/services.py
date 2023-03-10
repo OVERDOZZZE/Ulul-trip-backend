@@ -2,7 +2,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from rest_framework import request
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from src.users.models import User
 from src.users.utils import Util
 
@@ -30,11 +29,11 @@ class ProfileService:
         relative_link = reverse("email-verify")
         absurl = "http://" + current_site + relative_link + "?token=" + str(token)
         email_body = (
-                "Hi "
-                + user.first_name.title()
-                + "! "
-                + " Use link below to verify your new email\n"
-                + absurl
+            "Hi "
+            + user.name.title()
+            + "! "
+            + " Use link below to verify your  email\n"
+            + absurl
         )
         data = {
             "email_body": email_body,

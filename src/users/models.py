@@ -9,22 +9,22 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, password, **extra_fields):
+    def create_user(self, name, username, email, password, **extra_fields):
         if email is None:
             raise TypeError("Users should have email")
         user = self.model(
-            first_name=first_name,
-            last_name=last_name,
+            name=name,
+            username=username,
             email=self.normalize_email(email),
             **extra_fields
         )
         user.set_password(password)
         return user
 
-    def create_superuser(self, email, password, last_name, first_name, **extra_fields):
+    def create_superuser(self, email, password, name, username, **extra_fields):
         if password is None:
             raise TypeError("Password should not be none")
-        user = self.create_user(first_name, last_name, email, password, **extra_fields)
+        user = self.create_user(name, username, email, password, **extra_fields)
         user.is_superuser = True
         user.is_staff = True
         user.save()
@@ -33,8 +33,8 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, db_index=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=255)
+    username = models.CharField(max_length=50, unique=True, db_index=True)
     is_verified = models.BooleanField(default=False, help_text="Email activated")
     is_staff = models.BooleanField(default=False, help_text="Сотрудник")
     is_superuser = models.BooleanField(default=False, help_text="админ")
@@ -46,15 +46,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name="favorite_tour",
         verbose_name="Избранные",
     )
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = [
-        "last_name",
-        "first_name",
+        "name",
+        "email",
     ]
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)

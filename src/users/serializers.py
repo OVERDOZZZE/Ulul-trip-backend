@@ -1,19 +1,21 @@
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError, force_str
-from rest_framework.exceptions import AuthenticationFailed
 from django.contrib import auth
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from rest_framework.response import Response
 from django.contrib.auth import password_validation
-from rest_framework import serializers, exceptions, status
-from .models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
+
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.response import Response
+from rest_framework import serializers, exceptions, status
 from rest_framework.validators import UniqueValidator
+
+from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "first_name", "email", "last_name"]
+        fields = ("id", "name", "email", "username")
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -26,45 +28,46 @@ class RegisterSerializer(serializers.ModelSerializer):
         help_text=password_validation.password_validators_help_texts(),
     )
     password_again = serializers.CharField(
-        max_length=30, min_length=6, write_only=True, style={"input_type": "password"}
+        write_only=True, style={"input_type": "password"}
     )
-    first_name = serializers.CharField(
-        max_length=100,
+    name = serializers.CharField(
+        max_length=50,
         min_length=2,
         help_text="Name should contain only alphabetical characters",
     )
     email = serializers.EmailField(
-        max_length=30,
-        min_length=5,
+        max_length=50,
+        min_length=3,
         validators=[UniqueValidator(queryset=User.objects.all())],
     )
-    last_name = serializers.CharField(
-        max_length=30,
+    username = serializers.CharField(
+        max_length=50,
         min_length=2,
         help_text="Username should contain only alphanumeric characters",
+        validators=[UniqueValidator(queryset=User.objects.all())],
     )
 
     class Meta:
         model = User
-        fields = [
+        fields = (
             "id",
-            "first_name",
-            "last_name",
+            "name",
+            "username",
             "email",
             "password",
             "password_again",
-        ]
+        )
 
     def validate(self, attrs):
-        first_name = attrs.get("first_name", "")
-        last_name = attrs.get("last_name", "")
-        if not first_name.isalpha():
+        name = attrs.get("name", "")
+        username = attrs.get("username", "")
+        if not name.isalpha() or (name.isalpha() and name.count(" ") == 1):
             raise serializers.ValidationError(
-                f"The users first name is not valid, make sure that it contains only alphabetical characters"
+                f"The users  name is not valid, make sure that it contains only alphabetical characters"
             )
-        if not last_name.isalpha():
+        if not username.isalnum():
             raise serializers.ValidationError(
-                f"The users last name: {last_name} should only contain alphanumeric characters",
+                f"The users username: {username} should only contain alphanumeric characters",
                 400,
             )
         return super().validate(attrs)
@@ -89,20 +92,20 @@ class EmailVerifySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["token"]
+        fields = ("token",)
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True, style={"input_type": "password"})
-    first_name = serializers.CharField(read_only=True)
-    last_name = serializers.CharField(read_only=True)
+    email = serializers.EmailField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    username = serializers.CharField()
     tokens = serializers.CharField(read_only=True)
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
 
     def validate(self, attrs):
-        email = attrs.get("email", "")
+        username = attrs.get("username", "")
         password = attrs.get("password", "")
-        user = auth.authenticate(email=email, password=password)
+        user = auth.authenticate(username=username, password=password)
         if not user:
             raise AuthenticationFailed("Invalid credentials, try again")
         if not user.is_active:
@@ -111,8 +114,8 @@ class LoginSerializer(serializers.Serializer):
             raise AuthenticationFailed("Email is not verified")
         return {
             "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
+            "username": user.username,
+            "name": user.name,
             "tokens": user.tokens(),
         }
 
@@ -122,9 +125,7 @@ class RequestResetPasswordEmailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            "email",
-        ]
+        fields = ("email",)
 
 
 class PasswordTokenCheckViewSerializer(serializers.Serializer):
@@ -132,7 +133,7 @@ class PasswordTokenCheckViewSerializer(serializers.Serializer):
     token = serializers.CharField(min_length=1, write_only=True)
 
     class Meta:
-        fields = ["uidb64", "token"]
+        fields = ("uidb64", "token")
 
     def validate(self, attrs):
         uidb64 = attrs.get("uidb64")
@@ -174,7 +175,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
     token = serializers.CharField(min_length=1, write_only=True)
 
     class Meta:
-        fields = ["password", "password_repeat", "uidb64", "token"]
+        fields = ("password", "password_repeat", "uidb64", "token")
 
     def validate(self, attrs):
         errors = {}

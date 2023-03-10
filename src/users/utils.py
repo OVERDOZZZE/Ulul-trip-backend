@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-
+import random
 from django.core.mail import EmailMessage
 
 
@@ -17,7 +17,8 @@ class Util:
 
 def path_and_rename(instance, filename):
     now = datetime.now()
+    number = random.randint
     upload_to = "media"
     ext = filename.split(".")[-1]
-    filename = f'{instance.tour.title}{now.strftime("%d-%m-%Y")}.{ext}'
+    filename = f'{instance.tour.title}{now.strftime("%d-%m-%Y")}{number}.{ext}'
     return os.path.join(upload_to, filename)
