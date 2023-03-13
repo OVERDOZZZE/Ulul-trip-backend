@@ -1,6 +1,8 @@
-from rest_framework import viewsets, generics, permissions
+from rest_framework import viewsets, generics, permissions, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from .models import Tour, Review, Category, Region, Guide, AboutUs
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
@@ -49,11 +51,21 @@ class RegionListView(generics.ListAPIView):
     serializer_class = RegionSerializer
 
 
-@api_view(["GET"])
-def tour_list_view(request, slug):
-    tour = Tour.objects.filter(slug=slug)
-    serializer = TourSerializer(tour, many=True)
-    return Response(data=serializer.data)
+class TourDetail(mixins.ListModelMixin,
+                 mixins.RetrieveModelMixin,
+                 GenericViewSet):
+    queryset = Tour.objects.all()
+    serializer_class = TourSerializer
+
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        slug = self.kwargs.get(self.lookup_field)
+        if slug:
+            queryset = queryset.filter(slug=slug)
+        return queryset
 
 
 class GetSlugTitleListView(generics.ListAPIView):

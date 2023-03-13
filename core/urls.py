@@ -10,6 +10,7 @@ admin.site.site_header = "Административная панель"
 admin.site.index_title = "Модели"
 
 urlpatterns = [
+    path('', include('rest_framework.urls')),
     path("admin/", admin.site.urls, name="admin"),
     path("home/", include("src.tour.urls")),
     path("local/", include("django.conf.urls.i18n")),
