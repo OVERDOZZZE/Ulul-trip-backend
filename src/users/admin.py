@@ -16,6 +16,7 @@ class UserAdmin(admin.ModelAdmin):
         "is_active",
         "is_staff",
         "password",
+        'favorite_tour'
     )
 
     readonly_fields = ("is_verified", "password")

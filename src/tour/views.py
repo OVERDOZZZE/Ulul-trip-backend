@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Tour, Review, Category, Region, Guide
+from .models import Tour, Review, Category, Region, Guide, AboutUs
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
     GuideSerializer,
@@ -10,6 +10,7 @@ from .serializers import (
     RegionSerializer,
     CategorySerializer,
     GetTitleSlugSerializer,
+    AboutUsSerializer
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from .service import TourFilter
@@ -32,29 +33,10 @@ class TourListView(generics.ListAPIView):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-
-# class ReviewListView(generics.ListAPIView):
-#     queryset = Review.objects.all()
-#     serializer_class = ReviewSerializer
-
-
-# class ReviewCreateView(APIView):
-#     def post(self, request, id):
-#         post = Tour.objects.get(id=id)
-#         Review.objects.create(
-#             author=request.user,
-#             post_id=id,
-#             text=request.data['text'],
-#             rating=request.data['rating']
-#         )
-#         return Response({'review': "Review was created successfully!"})
-#
-#     permission_classes = [permissions.IsAuthenticated]
 
 
 class CategoryListView(generics.ListAPIView):
@@ -85,3 +67,8 @@ class TourReviewsList(generics.ListAPIView):
     def get_queryset(self):
         post_id = self.kwargs['tour_id']
         return Review.objects.filter(post_id=post_id)
+
+
+class AboutUsList(generics.ListAPIView):
+    queryset = AboutUs.objects.all()
+    serializer_class = AboutUsSerializer

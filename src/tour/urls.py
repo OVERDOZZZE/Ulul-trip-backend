@@ -19,5 +19,6 @@ urlpatterns = [
         FavoriteTourApiView.as_view(),
         name="favorites-crud",
     ),
-    path('tours/<int:tour_id>/reviews/', TourReviewsList.as_view())
+    path('tours/<int:tour_id>/reviews/', TourReviewsList.as_view()),
+    path('about_us/', AboutUsList.as_view())
 ]

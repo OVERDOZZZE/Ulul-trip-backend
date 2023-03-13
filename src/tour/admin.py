@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tour, Category, Region, Review, Images, Guide
+from .models import Tour, Category, Region, Review, Images, Guide, AboutUs
 
 
 # Register your models here.
@@ -43,9 +43,21 @@ class ReviewAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
+class AboutUsAdmin(admin.ModelAdmin):
+    model = AboutUs
+
+    def has_add_permission(self, request):
+        num_objects = self.model.objects.count()
+
+        if num_objects >= 1:
+            return False
+        return True
+
+
 admin.site.register(Tour, TourAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Images)
+admin.site.register(AboutUs, AboutUsAdmin)
 admin.site.register(Guide, GuideAdmin)

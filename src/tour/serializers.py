@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.relations import StringRelatedField
-from .models import Tour, Review, Category, Region, Guide, Images
+from .models import Tour, Review, Category, Region, Guide, Images, AboutUs
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -75,3 +75,9 @@ class GetTitleSlugSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ("id", "slug", "category", "price", "title")
+
+
+class AboutUsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutUs
+        fields = '__all__'

@@ -140,3 +140,13 @@ class Tour(models.Model):
     def set_actual_limit(self):
         self.actual_limit = self.quantity_limit
         return self.actual_limit
+
+
+class AboutUs(models.Model):
+    class Meta:
+        verbose_name = 'About Us'
+        verbose_name_plural = 'About Us'
+    specialists = models.PositiveSmallIntegerField()
+    clients = models.PositiveSmallIntegerField()
+    tours = models.PositiveSmallIntegerField()
+    years = models.PositiveSmallIntegerField()
