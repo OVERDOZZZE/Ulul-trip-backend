@@ -77,3 +77,11 @@ def tour_list_view(request, slug):
 class GetSlugTitleListView(generics.ListAPIView):
     queryset = Tour.objects.all()
     serializer_class = GetTitleSlugSerializer
+
+
+class TourReviewsList(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        post_id = self.kwargs['tour_id']
+        return Review.objects.filter(post_id=post_id)

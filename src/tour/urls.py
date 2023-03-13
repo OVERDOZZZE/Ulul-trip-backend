@@ -18,7 +18,6 @@ urlpatterns = [
         "tours/<str:slug>/favorite/",
         FavoriteTourApiView.as_view(),
         name="favorites-crud",
-    )
-    # path('src/v1/reviews/create/<int:id>', ReviewCreateView.as_view(), name='review_create')
-    # path('src/v1/reviews/', ReviewListView.as_view(), name='reviews'),
+    ),
+    path('tours/<int:tour_id>/reviews/', TourReviewsList.as_view())
 ]
