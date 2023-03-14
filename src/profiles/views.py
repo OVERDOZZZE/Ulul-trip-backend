@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from src.users.models import User
 from .exceptions import UserNotFoundException, TourNotFoundException
+from .permissions import IsOwner
 from .serializers import (
     ProfileEditSerializer,
     ChangePasswordSerializer,
@@ -49,6 +50,7 @@ class UsersDetailUpdateDelete(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     http_method_names = ("put", "get", "delete")
+    permission_classes = [IsOwner]
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
