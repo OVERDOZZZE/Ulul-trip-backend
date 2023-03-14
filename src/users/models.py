@@ -38,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False, help_text="Email activated")
     is_staff = models.BooleanField(default=False, help_text="Сотрудник")
     is_superuser = models.BooleanField(default=False, help_text="админ")
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorite_tour = models.ManyToManyField(
