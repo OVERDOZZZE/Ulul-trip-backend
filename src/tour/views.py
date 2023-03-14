@@ -12,7 +12,8 @@ from .serializers import (
     RegionSerializer,
     CategorySerializer,
     GetTitleSlugSerializer,
-    AboutUsSerializer, ShortTourSerializer
+    AboutUsSerializer,
+    ShortTourSerializer,
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from .service import TourFilter
@@ -51,14 +52,12 @@ class RegionListView(generics.ListAPIView):
     serializer_class = RegionSerializer
 
 
-class TourDetail(
-                 mixins.RetrieveModelMixin,
-                 GenericViewSet):
+class TourDetail(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
 
-    lookup_field = 'slug'
-    lookup_url_kwarg = 'slug'
+    lookup_field = "slug"
+    lookup_url_kwarg = "slug"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -77,7 +76,7 @@ class TourReviewsList(generics.ListAPIView):
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
-        slug = self.kwargs.get('slug')
+        slug = self.kwargs.get("slug")
         tour = Tour.objects.get(slug=slug)
         return Review.objects.filter(post=tour)
 

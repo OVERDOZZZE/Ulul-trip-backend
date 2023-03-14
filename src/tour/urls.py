@@ -5,7 +5,7 @@ from src.profiles.views import FavoriteTourApiView
 
 router = routers.SimpleRouter()
 router.register(r"review", ReviewViewSet, basename="review")
-router.register(r'tour', TourDetail, basename='tour')
+router.register(r"tour", TourDetail, basename="tour")
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -19,6 +19,6 @@ urlpatterns = [
         FavoriteTourApiView.as_view(),
         name="favorites-crud",
     ),
-    path('tours/<slug:slug>/reviews/', TourReviewsList.as_view()),
-    path('about_us/', AboutUsList.as_view())
+    path("tours/<slug:slug>/reviews/", TourReviewsList.as_view()),
+    path("about_us/", AboutUsList.as_view()),
 ]

@@ -82,4 +82,4 @@ class GetTitleSlugSerializer(serializers.ModelSerializer):
 class AboutUsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutUs
-        fields = '__all__'
+        fields = "__all__"

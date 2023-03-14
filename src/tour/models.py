@@ -144,8 +144,9 @@ class Tour(models.Model):
 
 class AboutUs(models.Model):
     class Meta:
-        verbose_name = 'About Us'
-        verbose_name_plural = 'About Us'
+        verbose_name = "About Us"
+        verbose_name_plural = "About Us"
+
     specialists = models.PositiveSmallIntegerField()
     clients = models.PositiveSmallIntegerField()
     tours = models.PositiveSmallIntegerField()

@@ -101,7 +101,7 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     tokens = serializers.CharField(read_only=True)
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
-
+    id = serializers.ReadOnlyField()
     def validate(self, attrs):
         username = attrs.get("username", "")
         password = attrs.get("password", "")
@@ -113,6 +113,7 @@ class LoginSerializer(serializers.Serializer):
         if not user.is_verified:
             raise AuthenticationFailed("Email is not verified")
         return {
+            "id": user.id,
             "email": user.email,
             "username": user.username,
             "name": user.name,
