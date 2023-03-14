@@ -2,6 +2,7 @@ from django.contrib.auth import password_validation
 from rest_framework import serializers
 from src.users.models import User
 from src.tour.models import Tour
+from src.tour.serializers import TourSerializer
 from rest_framework.validators import UniqueValidator
 
 
@@ -76,7 +77,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    favorite_tour = FavoriteTourSerializer(many=True)
+    favorite_tour = TourSerializer(many=True)
 
     class Meta:
         model = User
