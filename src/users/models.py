@@ -35,7 +35,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, db_index=True)
     name = models.CharField(max_length=255)
     username = models.CharField(max_length=50, unique=True, db_index=True)
-    is_verified = models.BooleanField(default=False, help_text="Email activated")
+    #Надо обратно заменить на False
+    is_verified = models.BooleanField(default=True, help_text="Email activated")
     is_staff = models.BooleanField(default=False, help_text="Сотрудник")
     is_superuser = models.BooleanField(default=False, help_text="админ")
     is_active = models.BooleanField(default=False)

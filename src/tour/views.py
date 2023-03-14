@@ -12,7 +12,7 @@ from .serializers import (
     RegionSerializer,
     CategorySerializer,
     GetTitleSlugSerializer,
-    AboutUsSerializer
+    AboutUsSerializer, ShortTourSerializer
 )
 from django_filters.rest_framework import DjangoFilterBackend
 from .service import TourFilter
@@ -28,7 +28,7 @@ class TourListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = TourFilter
     queryset = Tour.objects.all()
-    serializer_class = TourSerializer
+    serializer_class = ShortTourSerializer
     search_fields = ("^title",)
 
 
@@ -51,7 +51,7 @@ class RegionListView(generics.ListAPIView):
     serializer_class = RegionSerializer
 
 
-class TourDetail(mixins.ListModelMixin,
+class TourDetail(
                  mixins.RetrieveModelMixin,
                  GenericViewSet):
     queryset = Tour.objects.all()

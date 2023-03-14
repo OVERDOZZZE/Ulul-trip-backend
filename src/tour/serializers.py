@@ -58,9 +58,11 @@ class TourSerializer(serializers.ModelSerializer):
 
 
 class ShortTourSerializer(serializers.ModelSerializer):
+    tour_images = ImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Tour
-        fields = "id title".split()
+        fields = "title price average_rating tour_images".split()
 
 
 class ReviewSerializer(serializers.ModelSerializer):
