@@ -102,6 +102,7 @@ class LoginSerializer(serializers.Serializer):
     tokens = serializers.CharField(read_only=True)
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
     id = serializers.ReadOnlyField()
+
     def validate(self, attrs):
         username = attrs.get("username", "")
         password = attrs.get("password", "")
@@ -127,39 +128,6 @@ class RequestResetPasswordEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("email",)
-
-
-class PasswordTokenCheckViewSerializer(serializers.Serializer):
-    uidb64 = serializers.CharField(min_length=1, write_only=True)
-    token = serializers.CharField(min_length=1, write_only=True)
-
-    class Meta:
-        fields = ("uidb64", "token")
-
-    def validate(self, attrs):
-        uidb64 = attrs.get("uidb64")
-        token = attrs.get("token")
-        global user
-        try:
-            id = smart_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.filter(id=id).first()
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response(
-                    {"error": "Token is not valid, please request a new one"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except ValueError:
-            return Response(
-                {"error": "Invalid credentials were provided"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except DjangoUnicodeDecodeError:
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response(
-                    {"error": "Token is not valid please request new one"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        return super().validate(attrs)
 
 
 class SetNewPasswordSerializer(serializers.Serializer):

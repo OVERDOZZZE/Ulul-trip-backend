@@ -14,11 +14,9 @@ class UserService:
 
     @classmethod
     def send_mail_reset_password(cls, user, request):
-        uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
-        token = PasswordResetTokenGenerator().make_token(user)
         current_site = get_current_site(request=request).domain
         relative_link = reverse(
-            "password-reset-confirm", kwargs={"uidb64": uidb64, "token": token}
+            "password-reset-complete"
         )
         absurl = "http://" + current_site + relative_link
         email_body = (

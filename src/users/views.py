@@ -1,5 +1,8 @@
 import jwt
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import render
+from django.utils.encoding import smart_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,7 +12,6 @@ from .serializers import (
     LoginSerializer,
     RequestResetPasswordEmailSerializer,
     SetNewPasswordSerializer,
-    PasswordTokenCheckViewSerializer,
 )
 from .models import User
 from django.conf import settings
@@ -30,7 +32,8 @@ class RegisterView(generics.GenericAPIView):
         user_data = serializer.data
         user = User.objects.get(email=user_data["email"])
         UserService.send_mail_register(user=user, request=request)
-        return Response(data=user_data, status=status.HTTP_201_CREATED)
+        return Response({"user": user_data,
+                         "message": "We have sent you link to activate your email"}, status=status.HTTP_201_CREATED)
 
 
 class VerifyEmailView(APIView):
@@ -82,28 +85,20 @@ class RequestResetPasswordEmailView(generics.GenericAPIView):
         email = request.data.get("email", "")
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
+            uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
             UserService.send_mail_reset_password(user=user, request=request)
+            return Response(
+                {
+                    "success": "We have sent you link to reset your password",
+                    "uidb64": uidb64,
+                    "token": token
+                },
+                status=status.HTTP_200_OK,
+            )
         return Response(
-            {"success": "We have sent you link to reset your password"},
-            status=status.HTTP_200_OK,
-        )
-
-
-class PasswordTokenCheckView(generics.GenericAPIView):
-    serializer_class = PasswordTokenCheckViewSerializer
-
-    def get(self, request, uidb64, token):
-        data = {"uidb64": uidb64, "token": token}
-        serializer = self.serializer_class(data=data)
-        serializer.is_valid(raise_exception=True)
-        return Response(
-            {
-                "success": True,
-                "message": "Credentials Valid",
-                "uidb64": uidb64,
-                "token": token,
-            },
-            status=status.HTTP_200_OK,
+            {"error": "Enter valid or existing email"},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
