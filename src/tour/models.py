@@ -2,6 +2,8 @@ from src.users.models import User
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from src.users.utils import path_and_rename
+import string
+import random
 
 
 class Guide(models.Model):
@@ -114,7 +116,7 @@ class Tour(models.Model):
     date_departure = models.DateField()
     date_arrival = models.DateField()
     region = models.ManyToManyField(Region, related_name="tour_region")
-    quantity_limit = models.PositiveIntegerField(blank=True)
+    quantity_limit = models.PositiveIntegerField()
     actual_limit = models.PositiveIntegerField(editable=False, blank=True, null=True)
     is_hot = models.BooleanField(default=False)
     duration = models.CharField(max_length=255, choices=DURATION_CHOICES)
@@ -123,6 +125,7 @@ class Tour(models.Model):
         Category, on_delete=models.CASCADE, blank=True, null=True
     )
     guide = models.ForeignKey(Guide, on_delete=models.CASCADE, null=True, blank=True)
+    qr_code = models.CharField(default='', max_length=8, blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -140,6 +143,17 @@ class Tour(models.Model):
     def set_actual_limit(self):
         self.actual_limit = self.quantity_limit
         return self.actual_limit
+
+    def save(self, *args, **kwargs):
+        strings_upp = string.ascii_uppercase
+        strings_low = string.ascii_lowercase
+        digits = string.digits
+        str_up = ''.join(random.choice(strings_upp) for i in range(2))
+        str_low = ''.join(random.choice(strings_low) for i in range(2))
+        dig_ = ''.join(random.choice(digits) for i in range(4))
+        self.qr_code = str_up + dig_ + str_low
+        return super(Tour, self).save(*args, **kwargs)
+
 
 
 class AboutUs(models.Model):

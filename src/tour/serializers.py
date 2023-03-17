@@ -40,13 +40,14 @@ class TourSerializer(serializers.ModelSerializer):
         ),
         write_only=True,
     )
+    qr_code = serializers.CharField(read_only=True, max_length=8)
 
     class Meta:
         model = Tour
         fields = (
             "id title description price guide date_departure date_arrival date_published"
             " region is_hot duration complexity category average_rating quantity_limit"
-            " set_actual_limit tour_images slug uploaded_images".split()
+            " set_actual_limit tour_images slug uploaded_images qr_code".split()
         )
 
         def create(self, validated_data):
@@ -58,11 +59,12 @@ class TourSerializer(serializers.ModelSerializer):
 
 
 class ShortTourSerializer(serializers.ModelSerializer):
+    region = RegionSerializer(many=True, read_only=True)
     tour_images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Tour
-        fields = "title price average_rating tour_images".split()
+        fields = "id title price slug duration region average_rating tour_images".split()
 
 
 class ReviewSerializer(serializers.ModelSerializer):
