@@ -3,13 +3,12 @@ from .models import User
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("email", "name", "username", "is_verified")
+    list_display = ("email", "username", "is_verified")
     list_display_links = ("username",)
     search_fields = ("email", "username")
     view_on_site = False
     fields = (
         "email",
-        "name",
         "username",
         "is_superuser",
         "is_verified",

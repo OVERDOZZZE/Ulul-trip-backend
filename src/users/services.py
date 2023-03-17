@@ -1,7 +1,4 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import smart_bytes
-from django.utils.http import urlsafe_base64_encode
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -14,15 +11,13 @@ class UserService:
 
     @classmethod
     def send_mail_reset_password(cls, user, request):
-        current_site = get_current_site(request=request).domain
-        relative_link = reverse(
-            "password-reset-complete"
-        )
-        absurl = "http://" + current_site + relative_link
+        digits = str(user.created_at)
+        dot = digits.index('.') + 1
+        send_digits = digits[dot:dot + 6]
         email_body = (
-            f"Hello {user.name}"
-            + " Use this link below to reset your password\n"
-            + absurl
+                f"Hello {user.username}"
+                + " Use this digits below to reset your password\n" +
+                send_digits
         )
         data = {
             "email_body": email_body,
@@ -38,11 +33,11 @@ class UserService:
         relative_link = reverse("email-verify")
         absurl = "http://" + current_site + relative_link + "?token=" + str(token)
         email_body = (
-            "Hi "
-            + user.name.title()
-            + "! "
-            + " Use link below to verify your email\n"
-            + absurl
+                "Hi "
+                + user.username.title()
+                + "! "
+                + " Use link below to verify your email\n"
+                + absurl
         )
         data = {
             "email_body": email_body,

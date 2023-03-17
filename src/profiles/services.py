@@ -30,7 +30,7 @@ class ProfileService:
         absurl = "http://" + current_site + relative_link + "?token=" + str(token)
         email_body = (
             "Hi "
-            + user.name.title()
+            + user.username.title()
             + "! "
             + " Use link below to verify your  email\n"
             + absurl

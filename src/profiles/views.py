@@ -47,10 +47,9 @@ class ProfileChangePasswordViewSet(ModelViewSet):
 
 class UsersDetailUpdateDelete(ModelViewSet):
     serializer_class = ProfileEditSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
     queryset = User.objects.all()
     http_method_names = ("put", "get", "delete")
-    permission_classes = [IsOwner]
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -59,8 +58,7 @@ class UsersDetailUpdateDelete(ModelViewSet):
             ProfileService.send_email(
                 user=user, email=serializer.validated_data.get("email")
             )
-            user.first_name = serializer.validated_data.get("first_name")
-            user.last_name = serializer.validated_data.get("last_name")
+            user.username = serializer.validated_data.get("username")
             user.email = serializer.validated_data.get("email")
             user.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
@@ -121,7 +119,6 @@ class GetFavoriteTourApiView(generics.GenericAPIView):
 class RequestEmailValidateApiView(generics.GenericAPIView):
     serializer_class = RequestEmailValidateSerializer
     queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
 
     def send(self, request):
         serializer = self.serializer_class(data=request.data)

@@ -9,11 +9,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, name, username, email, password, **extra_fields):
+    def create_user(self, username, email, password, **extra_fields):
         if email is None:
             raise TypeError("Users should have email")
         user = self.model(
-            name=name,
             username=username,
             email=self.normalize_email(email),
             **extra_fields
@@ -21,10 +20,10 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         return user
 
-    def create_superuser(self, email, password, name, username, **extra_fields):
+    def create_superuser(self, email, password, username, **extra_fields):
         if password is None:
             raise TypeError("Password should not be none")
-        user = self.create_user(name, username, email, password, **extra_fields)
+        user = self.create_user(username, email, password, **extra_fields)
         user.is_superuser = True
         user.is_staff = True
         user.save()
@@ -33,7 +32,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, db_index=True)
-    name = models.CharField(max_length=255)
     username = models.CharField(max_length=50, unique=True, db_index=True)
     is_verified = models.BooleanField(default=False, help_text="Email activated")
     is_staff = models.BooleanField(default=False, help_text="Сотрудник")
@@ -48,7 +46,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = [
-        "name",
         "email",
     ]
     objects = UserManager()

@@ -13,12 +13,6 @@ class FavoriteTourSerializer(serializers.ModelSerializer):
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(
-        max_length=30,
-        min_length=2,
-        required=True,
-        help_text="Name should contain only alphabetical characters",
-    )
     username = serializers.CharField(
         max_length=30,
         min_length=2,
@@ -31,21 +25,16 @@ class ProfileEditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", "name", "email", "favorite_tour"]
+        fields = ("id", "username", "email", "favorite_tour")
 
     def validate(self, attrs):
-        name = attrs.get("name", "")
-        username = attrs.get("username", "")
-        if not name.isalpha() or name.isalpha() and name.count(" ") == 1:
-            raise serializers.ValidationError(
-                f"The users name  should only contain alphabetical characters", 400
-            )
-        if not username.isalnum():
-            raise serializers.ValidationError(
-                f"The users username  should only contain alphanumerical characters",
-                400,
-            )
-
+        username = attrs.get("username", "").split(' ')
+        for name in username:
+            if not name.isalpha() or (name.isalpha() and len(username) != 2):
+                raise serializers.ValidationError(
+                    f"The users username: {name} should only contain alphabetical characters ex: Ivan Ivanov",
+                    400,
+                )
         return super().validate(attrs)
 
 
@@ -81,7 +70,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "name", "username", "email", "favorite_tour")
+        fields = ("id", "username", "email", "favorite_tour")
 
 
 class AddToFavoriteSerializer(serializers.ModelSerializer):

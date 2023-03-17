@@ -1,9 +1,8 @@
 import jwt
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import render
-from django.utils.encoding import smart_bytes
-from django.utils.http import urlsafe_base64_encode
-from rest_framework import status, generics, permissions
+from django.utils.encoding import smart_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import (
@@ -12,6 +11,7 @@ from .serializers import (
     LoginSerializer,
     RequestResetPasswordEmailSerializer,
     SetNewPasswordSerializer,
+    CheckDigitsSerializer
 )
 from .models import User
 from django.conf import settings
@@ -86,13 +86,12 @@ class RequestResetPasswordEmailView(generics.GenericAPIView):
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
-            token = PasswordResetTokenGenerator().make_token(user)
+            # 2023-03-16 09:41:14.860849
             UserService.send_mail_reset_password(user=user, request=request)
             return Response(
                 {
-                    "success": "We have sent you link to reset your password",
+                    "success": "We have sent you message to reset your password",
                     "uidb64": uidb64,
-                    "token": token
                 },
                 status=status.HTTP_200_OK,
             )
@@ -100,6 +99,24 @@ class RequestResetPasswordEmailView(generics.GenericAPIView):
             {"error": "Enter valid or existing email"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class CheckDigitsView(generics.GenericAPIView):
+    serializer_class = CheckDigitsSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        uidb64 = serializer.validated_data.get("uidb64")
+        check_digits = serializer.validated_data.get("digits")
+        id = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(id=id)
+        digits = str(user.created_at)
+        dot = digits.index('.') + 1
+        send_digits = digits[dot:dot + 6]
+        if check_digits == send_digits:
+            return Response({"message": "correct"}, status=status.HTTP_200_OK)
+        return Response({"message": "incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SetNewPasswordView(generics.GenericAPIView):
